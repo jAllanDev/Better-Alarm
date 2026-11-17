@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Keyword Alarm Notifier",
+  "version": "1.0.0",
+  "description": "Checks a page every 15 seconds for a selected keyword and plays an alarm when it appears.",
+  "permissions": ["storage", "notifications", "offscreen"],
+  "host_permissions": ["https://sportswebhost.com/*", "https://www.sportswebhost.com/*"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Keyword Alarm Notifier"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://sportswebhost.com/*", "https://www.sportswebhost.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["offscreen.html", "offscreen.js", "icon.svg"],
+      "matches": ["https://sportswebhost.com/*", "https://www.sportswebhost.com/*"]
+    }
+  ]
+}

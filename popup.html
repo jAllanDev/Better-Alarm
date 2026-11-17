@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Keyword Alarm Notifier</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="panel">
+      <header class="hero">
+        <div class="eyebrow">Keyword watcher</div>
+        <h1>Alert on page text</h1>
+        <p>Choose a keyword, sound, and volume. The page is checked every 15 seconds while monitoring is on.</p>
+      </header>
+
+      <section class="card">
+        <div class="field-group">
+          <span>Monitoring</span>
+          <label class="switch">
+            <input id="enabled" type="checkbox" />
+            <span>Enabled</span>
+          </label>
+        </div>
+
+        <div class="field-group">
+          <span>Keywords</span>
+          <div class="keyword-grid">
+            <label class="keyword-pill"><input id="keywordCruise" type="checkbox" value="Cruise" /> Cruise</label>
+            <label class="keyword-pill"><input id="keywordWes" type="checkbox" value="Wes" /> Wes</label>
+            <label class="keyword-pill"><input id="keywordWolf" type="checkbox" value="Wolf" /> Wolf</label>
+            <label class="keyword-pill"><input id="keywordGio" type="checkbox" value="Gio" /> Gio</label>
+            <label class="keyword-pill"><input id="keywordCSFire" type="checkbox" value="CSFire" /> CSFire</label>
+            <label class="keyword-pill"><input id="keywordVick" type="checkbox" value="Vick" /> Vick</label>
+          </div>
+        </div>
+
+        <label>
+          <span>Sound</span>
+          <select id="sound">
+            <option value="alarm">Alarm</option>
+            <option value="chime">Chime</option>
+            <option value="siren">Siren</option>
+          </select>
+        </label>
+
+        <div class="field-group">
+          <span>Alarm mode</span>
+          <label class="switch">
+            <input id="recurrent" type="checkbox" />
+            <span>Repeat until acknowledged</span>
+          </label>
+        </div>
+
+        <label>
+          <span>Volume</span>
+          <div class="volume-row">
+            <input id="volume" type="range" min="0" max="100" step="1" />
+            <output id="volumeValue">80%</output>
+          </div>
+        </label>
+
+        <button id="testSound" type="button">Test sound</button>
+        <button id="acknowledgeIssue" type="button">Acknowledge issue</button>
+        <p id="timer" class="timer">Next check in --</p>
+        <p id="detectedSummary" class="summary active">Last found: No keywords detected yet</p>
+        <p id="summary" class="summary">No keywords found</p>
+        <p id="status" class="status">Loading settings...</p>
+      </section>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
