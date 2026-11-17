@@ -1,13 +1,13 @@
 # Keyword Alarm Notifier
 
-Chrome extension that checks the current page every 15 seconds for one selected keyword and plays a notification sound when it appears.
+Chrome extension that checks the current page every 15 seconds for the selected keywords and plays an alert when any of them appears.
 
 This build is restricted to https://sportswebhost.com/ and https://www.sportswebhost.com/.
 
 ## Included controls
 
-- Keyword picker: choose one, several, or all of Cruise, Wes, Wolf, Gio, CSFire, and Vick
-- Sound picker: Alarm, Chime, Siren
+- Keyword picker: choose any combination of Wes, Cruise, Wolf, Gio, and Fire22
+- Sound picker: Alarm (repeat) or Notification tone (one-time)
 - Volume slider
 - Monitoring on/off switch
 

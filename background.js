@@ -99,8 +99,8 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.get(
     {
       enabled: true,
-        keywords: ["Cruise"],
-        keyword: "Cruise",
+      keywords: ["Wes", "Cruise"],
+      keyword: "Wes",
       sound: "alarm",
       recurrent: false,
       volume: 80,

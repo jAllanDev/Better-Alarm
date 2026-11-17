@@ -38,6 +38,12 @@ async function playSound({ sound, volume }) {
   const now = context.currentTime;
   const gainNode = createGainNode(context, volume);
 
+  if (sound === "notification") {
+    playTone(context, gainNode, 880, now, 0.10, "sine");
+    playTone(context, gainNode, 1180, now + 0.12, 0.10, "triangle");
+    return;
+  }
+
   if (sound === "chime") {
     playTone(context, gainNode, 880, now, 0.14, "sine");
     playTone(context, gainNode, 1320, now + 0.16, 0.18, "sine");

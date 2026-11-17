@@ -1,7 +1,8 @@
+const ALLOWED_KEYWORDS = ["Wes", "Cruise", "Wolf", "Gio", "Fire22"];
 const DEFAULT_SETTINGS = {
   enabled: true,
-  keywords: ["Cruise"],
-  keyword: "Cruise",
+  keywords: ["Wes", "Cruise"],
+  keyword: "Wes",
   sound: "alarm",
   recurrent: false,
   volume: 80,
@@ -11,12 +12,11 @@ const CHECK_INTERVAL_MS = 15000;
 
 const fields = {
   enabled: document.getElementById("enabled"),
-  keywordCruise: document.getElementById("keywordCruise"),
   keywordWes: document.getElementById("keywordWes"),
+  keywordCruise: document.getElementById("keywordCruise"),
   keywordWolf: document.getElementById("keywordWolf"),
   keywordGio: document.getElementById("keywordGio"),
-  keywordCSFire: document.getElementById("keywordCSFire"),
-  keywordVick: document.getElementById("keywordVick"),
+  keywordFire22: document.getElementById("keywordFire22"),
   sound: document.getElementById("sound"),
   recurrent: document.getElementById("recurrent"),
   volume: document.getElementById("volume"),
@@ -30,13 +30,36 @@ const fields = {
 };
 
 const keywordFields = [
-  fields.keywordCruise,
   fields.keywordWes,
+  fields.keywordCruise,
   fields.keywordWolf,
   fields.keywordGio,
-  fields.keywordCSFire,
-  fields.keywordVick,
+  fields.keywordFire22,
 ];
+
+function normalizeKeywords(keywords) {
+  if (!Array.isArray(keywords)) {
+    return [];
+  }
+
+  const result = [];
+  for (const keyword of keywords) {
+    if (typeof keyword !== "string") {
+      continue;
+    }
+
+    const cleaned = keyword.trim();
+    if (!cleaned || result.includes(cleaned)) {
+      continue;
+    }
+
+    if (ALLOWED_KEYWORDS.includes(cleaned)) {
+      result.push(cleaned);
+    }
+  }
+
+  return result;
+}
 
 function setStatus(message) {
   fields.status.textContent = message;
@@ -72,16 +95,22 @@ function setSelectedKeywords(selectedKeywords) {
 function readSettings() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
-      if (Array.isArray(settings.keywords)) {
-        resolve(settings);
-        return;
-      }
+      const normalizedKeywords = normalizeKeywords(
+        Array.isArray(settings.keywords)
+          ? settings.keywords
+          : typeof settings.keyword === "string" && settings.keyword.length > 0
+            ? [settings.keyword]
+            : DEFAULT_SETTINGS.keywords
+      );
 
-      const migratedKeywords = typeof settings.keyword === "string" && settings.keyword.length > 0
-        ? [settings.keyword]
-        : DEFAULT_SETTINGS.keywords;
+      const nextSettings = {
+        ...settings,
+        keywords: normalizedKeywords.length > 0 ? normalizedKeywords : DEFAULT_SETTINGS.keywords,
+        keyword: normalizedKeywords[0] || DEFAULT_SETTINGS.keyword,
+        sound: settings.sound === "notification" || settings.sound === "alarm" || settings.sound === "chime" || settings.sound === "siren" ? settings.sound : DEFAULT_SETTINGS.sound,
+      };
 
-      resolve({ ...settings, keywords: migratedKeywords });
+      resolve(nextSettings);
     });
   });
 }

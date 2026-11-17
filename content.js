@@ -1,7 +1,8 @@
+const ALLOWED_KEYWORDS = ["Wes", "Cruise", "Wolf", "Gio", "Fire22"];
 const DEFAULT_SETTINGS = {
   enabled: true,
-  keywords: ["Cruise"],
-  keyword: "Cruise",
+  keywords: ["Wes", "Cruise"],
+  keyword: "Wes",
   sound: "alarm",
   volume: 80,
 };
@@ -16,19 +17,34 @@ if (!/^([a-z0-9-]+\.)?sportswebhost\.com$/i.test(location.hostname)) {
   throw new Error("Keyword Alarm Notifier is restricted to sportswebhost.com");
 }
 
+function normalizeKeywords(keywords) {
+  if (!Array.isArray(keywords)) {
+    return [];
+  }
+
+  const result = [];
+  keywords.forEach((keyword) => {
+    const cleaned = typeof keyword === "string" ? keyword.trim() : "";
+    if (!cleaned || result.includes(cleaned) || !ALLOWED_KEYWORDS.includes(cleaned)) {
+      return;
+    }
+
+    result.push(cleaned);
+  });
+
+  return result;
+}
+
 function readSettings() {
   return new Promise((resolve) => {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
-      if (Array.isArray(settings.keywords)) {
-        resolve(settings);
-        return;
-      }
+      const normalizedKeywords = normalizeKeywords(Array.isArray(settings.keywords) ? settings.keywords : (typeof settings.keyword === "string" && settings.keyword.length > 0 ? [settings.keyword] : DEFAULT_SETTINGS.keywords));
 
-      const migratedKeywords = typeof settings.keyword === "string" && settings.keyword.length > 0
-        ? [settings.keyword]
-        : DEFAULT_SETTINGS.keywords;
-
-      resolve({ ...settings, keywords: migratedKeywords });
+      resolve({
+        ...settings,
+        keywords: normalizedKeywords.length > 0 ? normalizedKeywords : DEFAULT_SETTINGS.keywords,
+        keyword: normalizedKeywords[0] || DEFAULT_SETTINGS.keyword,
+      });
     });
   });
 }
@@ -207,7 +223,7 @@ function scanPage() {
   }
 
   const pageText = collectPageText().toLowerCase();
-  const selectedKeywords = Array.isArray(activeSettings.keywords) ? activeSettings.keywords : [];
+  const selectedKeywords = normalizeKeywords(activeSettings.keywords);
   const detections = selectedKeywords
     .map((keyword) => ({
       keyword,
